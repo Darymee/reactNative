@@ -29,7 +29,6 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
 
-    borderColor: "#BDBDBD",
     borderWidth: 1,
     placeholderTextColor: "#BDBDBD",
     fontSize: 16,

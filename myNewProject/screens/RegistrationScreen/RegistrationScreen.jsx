@@ -23,15 +23,22 @@ export function RegistationScreen() {
   const [info, setInfo] = useState(initialState);
   const [showPassword, setShowPassword] = useState(true);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
+    setIsFocused(false);
     Keyboard.dismiss();
   };
 
   const onSubmit = () => {
     console.log(info);
     setInfo(initialState);
+  };
+
+  const handleFocus = () => {
+    setIsShowKeyboard(true);
+    setIsFocused(true);
   };
 
   const onShowPassword = () => setShowPassword(!showPassword);
@@ -50,9 +57,13 @@ export function RegistationScreen() {
             <View style={styles.inputWrapp}>
               <TextInput
                 placeholder="Login"
-                style={styles.input}
+                style={{
+                  ...styles.input,
+                  borderColor: isFocused ? "#FF6C00" : "#BDBDBD",
+                }}
                 value={info.login}
-                onFocus={() => setIsShowKeyboard(true)}
+                onFocus={handleFocus}
+                // onBlur={setIsFocused(false)}
                 onChangeText={(value) =>
                   setInfo((prevState) => ({ ...prevState, login: value }))
                 }
@@ -61,9 +72,12 @@ export function RegistationScreen() {
             <View style={styles.inputWrapp}>
               <TextInput
                 placeholder="Email address"
-                style={styles.input}
+                style={{
+                  ...styles.input,
+                  borderColor: isFocused ? "#FF6C00" : "#BDBDBD",
+                }}
                 value={info.email}
-                onFocus={() => setIsShowKeyboard(true)}
+                onFocus={handleFocus}
                 onChangeText={(value) =>
                   setInfo((prevState) => ({ ...prevState, email: value }))
                 }
@@ -74,8 +88,12 @@ export function RegistationScreen() {
                 placeholder="Password"
                 secureTextEntry={showPassword}
                 value={info.password}
-                style={{ ...styles.input, position: "relative" }}
-                onFocus={() => setIsShowKeyboard(true)}
+                style={{
+                  ...styles.input,
+                  position: "relative",
+                  borderColor: isFocused ? "#FF6C00" : "#BDBDBD",
+                }}
+                onFocus={handleFocus}
                 onChangeText={(value) =>
                   setInfo((prevState) => ({ ...prevState, password: value }))
                 }
