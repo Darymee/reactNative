@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { GoPlusSmall } from "react-icons/go";
-
 import {
   Platform,
   KeyboardAvoidingView,
@@ -44,12 +42,8 @@ export function RegistationScreen() {
         behavior={Platform.OS == "ios" ? "padding" : "height"}
       >
         <View style={styles.container}>
-          <View>
-            <View style={styles.avatar} />
-            <TouchableOpacity style={styles.addButton}>
-              <GoPlusSmall width={13} height={13} />
-            </TouchableOpacity>
-          </View>
+          <View style={styles.avatar} />
+
           <Text style={{ ...styles.title }}>Registration</Text>
 
           <View style={{ marginBottom: isShowKeyboard ? 16 : 43 }}>
