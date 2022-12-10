@@ -2,7 +2,18 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+  bgImage: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "flex-end",
+  },
+  wrapper: {
+    paddingTop: 32,
+    paddingLeft: 16,
+    paddingRight: 16,
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
@@ -16,7 +27,6 @@ export const styles = StyleSheet.create({
     lineHeight: 35,
     color: "#212121",
     marginBottom: 33,
-    marginTop: 32,
     letterSpacing: 0.01,
   },
   inputWrapp: {
