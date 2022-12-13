@@ -1,22 +1,53 @@
-import { Text, View, Image } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { styles } from "./PostsScreen.styled";
+import { Feather } from "@expo/vector-icons";
 
-export const PostsScreen = () => {
+import { TouchableOpacity } from "react-native";
+
+import { DefaultScreen } from "../../nestedScreens/DefaultScreen/DefaultScreen";
+import { MapScreen } from "../../nestedScreens/MapScreen/MapScreen";
+import { CommentsScreen } from "../../nestedScreens/CommentsScreen/CommentsScreen";
+
+const NestedScreen = createNativeStackNavigator();
+
+export const PostsScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.profile}>
-        <View>
-          <Image
-            source={require("../../../assets/images/avatar.png")}
-            style={styles.avatar}
-          />
-        </View>
-        <View style={styles.info}>
-          <Text style={styles.name}>Natali Romanova</Text>
-          <Text style={styles.email}>email@example.com</Text>
-        </View>
-      </View>
-    </View>
+    <NestedScreen.Navigator>
+      <NestedScreen.Screen
+        name="Default"
+        component={DefaultScreen}
+        options={{ headerShown: false }}
+      />
+      <NestedScreen.Screen
+        name="Comments"
+        component={CommentsScreen}
+        options={{
+          headerBackTitleVisible: false,
+          headerLeft: () => (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate("Default")}
+            >
+              <Feather name="arrow-left" size={24} color="#212121CC" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <NestedScreen.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          headerBackTitleVisible: false,
+          headerLeft: () => (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate("Default")}
+            >
+              <Feather name="arrow-left" size={24} color="#212121CC" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+    </NestedScreen.Navigator>
   );
 };
