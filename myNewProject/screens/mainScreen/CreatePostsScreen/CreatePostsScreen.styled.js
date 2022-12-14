@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     paddingHorizontal: 16,
     paddingTop: 32,
+    justifyContent: "space-between",
   },
 
   wrapper: {
@@ -50,6 +51,7 @@ export const styles = StyleSheet.create({
   buttonSubmit: {
     borderRadius: 100,
     paddingVertical: 16,
+    marginBottom: 32,
   },
 
   buttonText: {
@@ -63,5 +65,17 @@ export const styles = StyleSheet.create({
   iconWrapp: {
     position: "absolute",
     bottom: 16,
+  },
+
+  buttonDelete: {
+    width: 70,
+    height: 40,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 });

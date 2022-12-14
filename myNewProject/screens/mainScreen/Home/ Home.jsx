@@ -22,7 +22,7 @@ export const Home = ({ navigation }) => {
         tabBarStyle: {
           paddingTop: 9,
           paddingHorizontal: 63,
-          paddingBottom: 34,
+          paddingBottom: 50,
         },
       }}
     >
@@ -61,6 +61,7 @@ export const Home = ({ navigation }) => {
         name="Create post"
         component={CreatePostsScreen}
         options={{
+          tabBarStyle: { display: "none" },
           tabBarIcon: ({ fosuced, size, color }) => (
             <TouchableOpacity>
               <Entypo name="plus" size={size} color={color} fosuced={fosuced} />

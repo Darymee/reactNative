@@ -166,6 +166,9 @@ export const CreatePostsScreen = ({ navigation }) => {
                 Publish
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonDelete}>
+              <Feather name="trash-2" size={24} color="#DADADA" />
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </View>
