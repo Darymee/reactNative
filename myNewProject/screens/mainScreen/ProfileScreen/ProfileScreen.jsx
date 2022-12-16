@@ -74,27 +74,56 @@ export const ProfileScreen = ({ navigation }) => {
                   <View>
                     <Text style={styles.photoName}>{item.photoName}</Text>
                     <View style={styles.photoInfoWrapp}>
-                      <TouchableOpacity
-                        style={styles.comments}
-                        onPress={() =>
-                          navigation.navigate("Comments", { item })
-                        }
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
                       >
-                        <Feather
-                          name="message-circle"
-                          size={24}
-                          color={item.amount ? "#FF6C00" : "#BDBDBD"}
-                          style={{ transform: [{ scaleX: -1 }] }}
-                        />
-                        <Text
-                          style={{
-                            ...styles.commentsCount,
-                            color: item.amount ? "#212121" : "#BDBDBD",
-                          }}
+                        <TouchableOpacity
+                          style={{ ...styles.comments, marginRight: 24 }}
+                          onPress={() =>
+                            navigation.navigate("Comments", { item })
+                          }
                         >
-                          {item.amount ? item.amount : 0}
-                        </Text>
-                      </TouchableOpacity>
+                          <Feather
+                            name="message-circle"
+                            size={24}
+                            color={item.amount ? "#FF6C00" : "#BDBDBD"}
+                            style={{ transform: [{ scaleX: -1 }] }}
+                          />
+
+                          <Text
+                            style={{
+                              ...styles.commentsCount,
+                              color: item.amount ? "#212121" : "#BDBDBD",
+                            }}
+                          >
+                            {item.amount ? item.amount : 0}
+                          </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          style={styles.comments}
+                          activeOpacity={1}
+                        >
+                          <Feather
+                            name="thumbs-up"
+                            size={24}
+                            color={item.likes ? "#FF6C00" : "#BDBDBD"}
+                          />
+
+                          <Text
+                            style={{
+                              ...styles.commentsCount,
+                              color: item.likes ? "#212121" : "#BDBDBD",
+                            }}
+                          >
+                            {item.likes ? item.likes : 0}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
                       <TouchableOpacity
                         style={styles.place}
                         onPress={() => navigation.navigate("Map", { item })}

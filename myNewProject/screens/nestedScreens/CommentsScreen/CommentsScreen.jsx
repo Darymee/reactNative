@@ -38,7 +38,8 @@ export const CommentsScreen = ({ route }) => {
       .collection("comments")
       .add({ comment, login, date });
 
-    db.firestore()
+    await db
+      .firestore()
       .collection("posts")
       .doc(postId)
       .set({ ...item, amount: allComments.length + 1 });

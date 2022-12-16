@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFonts } from "expo-font";
 
@@ -9,12 +9,11 @@ import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { RegistationScreen } from "./screens/RegistrationScreen/RegistrationScreen";
-import { LoginScreen } from "./screens/LoginScreen/LoginScreen";
-import { Home } from "./screens/mainScreen/Home/Home";
+import { RegistationScreen } from "../screens/RegistrationScreen/RegistrationScreen";
+import { LoginScreen } from "../screens/LoginScreen/LoginScreen";
+import { Home } from "../screens/mainScreen/Home/Home";
 
-import db from "./firebase/config";
-import { authStateChangedUser } from "./redux/auth/authOperations";
+import { authStateChangedUser } from "../redux/auth/authOperations";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,9 +24,9 @@ export const Main = () => {
   const dispatch = useDispatch();
 
   const [fontsLoaded] = useFonts({
-    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+    "Roboto-Medium": require("../assets/fonts/Roboto-Medium.ttf"),
+    "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-Bold": require("../assets/fonts/Roboto-Bold.ttf"),
   });
 
   useEffect(() => {

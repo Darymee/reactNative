@@ -91,6 +91,7 @@ export const CreatePostsScreen = ({ navigation }) => {
       location,
       userId,
       login,
+      likes: 0,
     });
   };
 
