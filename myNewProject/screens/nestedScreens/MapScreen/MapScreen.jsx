@@ -5,7 +5,7 @@ import { styles } from "./MapScreen.styled";
 
 export const MapScreen = ({ route }) => {
   const coordinate = route.params.item.location;
-  const placeName = route.params.item.info.place;
+  const placeName = route.params.item.photoPlace;
   return (
     <View style={styles.container}>
       <MapView

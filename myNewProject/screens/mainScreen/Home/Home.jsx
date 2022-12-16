@@ -30,6 +30,7 @@ export const Home = ({ navigation }) => {
         name="Posts"
         component={PostsScreen}
         options={{
+          headerShown: false,
           tabBarIcon: ({ fosuced, size, color }) => (
             <TouchableOpacity>
               <Feather
@@ -40,14 +41,7 @@ export const Home = ({ navigation }) => {
               />
             </TouchableOpacity>
           ),
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 10, marginBottom: 10 }}
-              activeOpacity={0.7}
-            >
-              <Feather name="log-out" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
+
           tabBarItemStyle: {
             marginRight: 15,
             width: 70,

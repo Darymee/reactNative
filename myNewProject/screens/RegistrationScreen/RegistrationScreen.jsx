@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import { useDispatch } from "react-redux";
+
+import { authSignUpUser } from "../../redux/auth/authOperations";
+
 import {
   ImageBackground,
   Platform,
@@ -26,6 +30,8 @@ export function RegistationScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
+  const dispatch = useDispatch();
+
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     setIsFocused(false);
@@ -34,8 +40,10 @@ export function RegistationScreen({ navigation }) {
 
   const onSubmit = () => {
     console.log(info);
+    if (!info.login || !info.email || !info.password) return;
+
+    dispatch(authSignUpUser(info));
     setInfo(initialState);
-    navigation.navigate("Home");
   };
 
   const handleFocus = () => {
@@ -75,7 +83,6 @@ export function RegistationScreen({ navigation }) {
                     }}
                     value={info.login}
                     onFocus={handleFocus}
-                    // onBlur={setIsFocused(false)}
                     onChangeText={(value) =>
                       setInfo((prevState) => ({ ...prevState, login: value }))
                     }

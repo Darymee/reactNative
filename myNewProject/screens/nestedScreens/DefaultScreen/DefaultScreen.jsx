@@ -33,7 +33,7 @@ export const DefaultScreen = ({ route, navigation }) => {
           <View style={{ marginBottom: 35 }}>
             <Image source={{ uri: item.photo }} style={styles.photo} />
             <View>
-              <Text style={styles.photoName}>{item.info.name}</Text>
+              <Text style={styles.photoName}>{item.photoName}</Text>
               <View style={styles.photoInfoWrapp}>
                 <TouchableOpacity
                   style={styles.comments}
@@ -52,7 +52,7 @@ export const DefaultScreen = ({ route, navigation }) => {
                   onPress={() => navigation.navigate("Map", { item })}
                 >
                   <Feather name="map-pin" size={24} color="#BDBDBD" />
-                  <Text style={styles.placeName}>{item.info.place}</Text>
+                  <Text style={styles.placeName}>{item.photoPlace}</Text>
                 </TouchableOpacity>
               </View>
             </View>

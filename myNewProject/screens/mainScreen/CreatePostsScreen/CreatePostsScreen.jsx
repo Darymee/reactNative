@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { useSelector } from "react-redux";
+
 import { Camera, CameraType } from "expo-camera";
 import * as Location from "expo-location";
 
@@ -15,20 +17,20 @@ import {
   Keyboard,
 } from "react-native";
 
-import { styles } from "./CreatePostsScreen.styled";
+import db from "../../../firebase/config";
 
-const initialState = {
-  name: "",
-  place: "",
-};
+import { styles } from "./CreatePostsScreen.styled";
 
 export const CreatePostsScreen = ({ navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
-  const [info, setInfo] = useState(initialState);
+  const [photoName, setPhotoName] = useState("");
+  const [photoPlace, setPhotoPlace] = useState("");
   const [location, setLocation] = useState(null);
   const [status, setStatus] = useState(false);
+
+  const { userId, login } = useSelector((state) => state.auth);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -41,34 +43,75 @@ export const CreatePostsScreen = ({ navigation }) => {
   };
 
   const handleChangeName = (value) => {
-    setInfo((prevState) => ({ ...prevState, name: value }));
+    setPhotoName(value);
     statusCheck();
     return;
   };
 
   const handleChangePlace = (value) => {
-    setInfo((prevState) => ({ ...prevState, place: value }));
+    setPhotoPlace(value);
     statusCheck();
     return;
   };
 
   const statusCheck = () => {
-    if (photo && info.name && info.place) return setStatus(true);
+    if (photo && photoName && photoPlace) return setStatus(true);
   };
 
   const takePhone = async () => {
     const photo = await camera.takePictureAsync();
-    const location = await Location.getCurrentPositionAsync();
     setPhoto(photo.uri);
     setLocation(location.coords);
     statusCheck();
   };
 
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const uniquePostId = Date.now().toString();
+
+    await db.storage().ref(`postImage/${uniquePostId}`).put(file);
+
+    const processedPhoto = await db
+      .storage()
+      .ref("postImage")
+      .child(uniquePostId)
+      .getDownloadURL();
+
+    return processedPhoto;
+  };
+
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+    console.log(
+      "photo",
+      photo,
+      photoName,
+      photoPlace,
+      "location",
+      location,
+      "userId",
+      userId,
+      "login",
+      login
+    );
+    const createPost = await db.firestore().collection("posts").add({
+      photo,
+      photoName,
+      photoPlace,
+      location: location.coords,
+      userId,
+      login,
+    });
+  };
+
   const sendPhoto = () => {
     if (!status) return;
-    navigation.navigate("Default", { photo, info, location });
-    setInfo(initialState);
+    uploadPostToServer();
+    navigation.navigate("Default", { photo, photoPlace, photoName, location });
     setPhoto(null);
+    setPhotoName("");
+    setPhotoPlace("");
     setStatus(false);
   };
 
@@ -77,8 +120,9 @@ export const CreatePostsScreen = ({ navigation }) => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.log("Permission to access location was denied");
-        return;
       }
+      let locationRes = await Location.getCurrentPositionAsync();
+      setLocation(locationRes);
     })();
   }, []);
 
@@ -116,7 +160,7 @@ export const CreatePostsScreen = ({ navigation }) => {
           <View>
             <View style={styles.inputWrapp}>
               <TextInput
-                value={info.name}
+                value={photoName}
                 placeholder="Name..."
                 onFocus={handleFocus}
                 onChangeText={handleChangeName}
@@ -133,7 +177,7 @@ export const CreatePostsScreen = ({ navigation }) => {
               }}
             >
               <TextInput
-                value={info.place}
+                value={photoPlace}
                 placeholder="Place..."
                 onFocus={handleFocus}
                 onChangeText={handleChangePlace}
