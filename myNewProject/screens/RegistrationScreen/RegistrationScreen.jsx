@@ -73,7 +73,7 @@ export function RegistationScreen({ navigation }) {
 
               <Text style={{ ...styles.title }}>Registration</Text>
 
-              <View style={{}}>
+              <View style={{ marginBottom: isShowKeyboard ? 0 : 43 }}>
                 <View style={styles.inputWrapp}>
                   <TextInput
                     placeholder="Login"

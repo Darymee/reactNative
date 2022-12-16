@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     position: "absolute",
     top: -60,
-    left: "40%",
+    left: "39%",
   },
 
   addButton: {

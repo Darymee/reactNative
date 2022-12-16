@@ -70,6 +70,7 @@ export const Home = ({ navigation }) => {
               <Feather name="arrow-left" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           ),
+
           tabBarItemStyle: {
             marginRight: 15,
             width: 70,
@@ -86,6 +87,7 @@ export const Home = ({ navigation }) => {
           tabBarIcon: ({ fosuced, size, color }) => (
             <Feather name="user" size={size} color={color} fosuced={fosuced} />
           ),
+          headerShown: false,
           tabBarItemStyle: {
             width: 70,
             height: 40,

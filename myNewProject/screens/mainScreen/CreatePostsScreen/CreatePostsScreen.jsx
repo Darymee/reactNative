@@ -83,23 +83,12 @@ export const CreatePostsScreen = ({ navigation }) => {
 
   const uploadPostToServer = async () => {
     const photo = await uploadPhotoToServer();
-    console.log(
-      "photo",
-      photo,
-      photoName,
-      photoPlace,
-      "location",
-      location,
-      "userId",
-      userId,
-      "login",
-      login
-    );
+    console.log(location);
     const createPost = await db.firestore().collection("posts").add({
       photo,
       photoName,
       photoPlace,
-      location: location.coords,
+      location,
       userId,
       login,
     });
@@ -108,11 +97,14 @@ export const CreatePostsScreen = ({ navigation }) => {
   const sendPhoto = () => {
     if (!status) return;
     uploadPostToServer();
-    navigation.navigate("Default", { photo, photoPlace, photoName, location });
-    setPhoto(null);
+    navigation.navigate("Default");
+    deletePost();
+  };
+
+  const deletePost = () => {
     setPhotoName("");
     setPhotoPlace("");
-    setStatus(false);
+    setPhoto(null);
   };
 
   useEffect(() => {
@@ -123,6 +115,16 @@ export const CreatePostsScreen = ({ navigation }) => {
       }
       let locationRes = await Location.getCurrentPositionAsync();
       setLocation(locationRes);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Camera.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
     })();
   }, []);
 
@@ -210,7 +212,7 @@ export const CreatePostsScreen = ({ navigation }) => {
                 Publish
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonDelete}>
+            <TouchableOpacity style={styles.buttonDelete} onPress={deletePost}>
               <Feather name="trash-2" size={24} color="#DADADA" />
             </TouchableOpacity>
           </View>

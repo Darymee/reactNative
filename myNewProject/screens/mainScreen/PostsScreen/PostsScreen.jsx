@@ -1,3 +1,5 @@
+import { useDispatch } from "react-redux";
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import { Feather } from "@expo/vector-icons";
@@ -8,7 +10,6 @@ import { DefaultScreen } from "../../nestedScreens/DefaultScreen/DefaultScreen";
 import { MapScreen } from "../../nestedScreens/MapScreen/MapScreen";
 import { CommentsScreen } from "../../nestedScreens/CommentsScreen/CommentsScreen";
 import { authSignOutUser } from "../../../redux/auth/authOperations";
-import { useDispatch } from "react-redux";
 
 const NestedScreen = createNativeStackNavigator();
 

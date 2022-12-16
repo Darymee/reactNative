@@ -55,7 +55,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   commentsCount: {
-    color: "#BDBDBD",
     fontSize: 16,
     lineHeight: 19,
     marginLeft: 9,
