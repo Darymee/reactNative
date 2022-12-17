@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 
+import * as ImagePicker from "expo-image-picker";
+
 import { Camera, CameraType } from "expo-camera";
 import * as Location from "expo-location";
 
 import { MaterialIcons, Feather } from "@expo/vector-icons";
 import {
-  KeyboardAvoidingView,
   Text,
   View,
   TouchableWithoutFeedback,
@@ -60,6 +61,7 @@ export const CreatePostsScreen = ({ navigation }) => {
 
   const takePhone = async () => {
     const photo = await camera.takePictureAsync();
+    const location = await Location.getCurrentPositionAsync();
     setPhoto(photo.uri);
     setLocation(location.coords);
     statusCheck();
@@ -67,7 +69,9 @@ export const CreatePostsScreen = ({ navigation }) => {
 
   const uploadPhotoToServer = async () => {
     const response = await fetch(photo);
+
     const file = await response.blob();
+
     const uniquePostId = Date.now().toString();
 
     await db.storage().ref(`postImage/${uniquePostId}`).put(file);
@@ -84,6 +88,7 @@ export const CreatePostsScreen = ({ navigation }) => {
   const uploadPostToServer = async () => {
     const photo = await uploadPhotoToServer();
     console.log(location);
+
     const createPost = await db.firestore().collection("posts").add({
       photo,
       photoName,
@@ -106,6 +111,21 @@ export const CreatePostsScreen = ({ navigation }) => {
     setPhotoName("");
     setPhotoPlace("");
     setPhoto(null);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+    }
   };
 
   useEffect(() => {
@@ -132,9 +152,7 @@ export const CreatePostsScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS == "ios" ? "padding" : "height"}
-        >
+        <View>
           {photo ? (
             <View style={styles.wrapper}>
               <Image source={{ uri: photo }} style={styles.camera} />
@@ -155,69 +173,69 @@ export const CreatePostsScreen = ({ navigation }) => {
           <TouchableOpacity
             style={{ marginTop: 8, marginBottom: 48 }}
             activeOpacity={0.7}
+            onPress={pickImage}
           >
             <Text style={styles.cameraText}>
               {photo ? "Edit photo" : "Upload photo"}
             </Text>
           </TouchableOpacity>
-          <View>
-            <View style={styles.inputWrapp}>
-              <TextInput
-                value={photoName}
-                placeholder="Name..."
-                onFocus={handleFocus}
-                onChangeText={handleChangeName}
-                style={{
-                  ...styles.input,
-                }}
-              />
-            </View>
-            <View
+
+          <View style={styles.inputWrapp}>
+            <TextInput
+              value={photoName}
+              placeholder="Name..."
+              onFocus={handleFocus}
+              onChangeText={handleChangeName}
               style={{
-                ...styles.inputWrapp,
-                position: "relative",
-                marginBottom: isShowKeyboard ? 50 : 32,
+                ...styles.input,
               }}
-            >
-              <TextInput
-                value={photoPlace}
-                placeholder="Place..."
-                onFocus={handleFocus}
-                onChangeText={handleChangePlace}
-                style={{
-                  ...styles.input,
-                  paddingLeft: 28,
-                }}
-              />
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={{ ...styles.iconWrapp, marginRight: 8 }}
-              >
-                <Feather name="map-pin" size={24} color="#BDBDBD" />
-              </TouchableOpacity>
-            </View>
+            />
+          </View>
+          <View
+            style={{
+              ...styles.inputWrapp,
+              position: "relative",
+              marginBottom: isShowKeyboard ? 50 : 32,
+            }}
+          >
+            <TextInput
+              value={photoPlace}
+              placeholder="Place..."
+              onFocus={handleFocus}
+              onChangeText={handleChangePlace}
+              style={{
+                ...styles.input,
+                paddingLeft: 28,
+              }}
+            />
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={sendPhoto}
-              style={{
-                ...styles.buttonSubmit,
-                backgroundColor: status ? "#FF6C00" : "#F6F6F6",
-              }}
+              style={{ ...styles.iconWrapp, marginRight: 8 }}
             >
-              <Text
-                style={{
-                  ...styles.buttonText,
-                  color: status ? "#FFFFFF" : "#BDBDBD",
-                }}
-              >
-                Publish
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonDelete} onPress={deletePost}>
-              <Feather name="trash-2" size={24} color="#DADADA" />
+              <Feather name="map-pin" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={sendPhoto}
+            style={{
+              ...styles.buttonSubmit,
+              backgroundColor: status ? "#FF6C00" : "#F6F6F6",
+            }}
+          >
+            <Text
+              style={{
+                ...styles.buttonText,
+                color: status ? "#FFFFFF" : "#BDBDBD",
+              }}
+            >
+              Publish
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.buttonDelete} onPress={deletePost}>
+          <Feather name="trash-2" size={24} color="#DADADA" />
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );

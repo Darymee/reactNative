@@ -2,7 +2,11 @@ import { useState } from "react";
 
 import { useDispatch } from "react-redux";
 
+import * as ImagePicker from "expo-image-picker";
+
 import { authSignUpUser } from "../../redux/auth/authOperations";
+
+import { AntDesign } from "@expo/vector-icons";
 
 import {
   ImageBackground,
@@ -14,6 +18,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
 
 import { styles } from "./RegistrationScreen.styled";
@@ -22,6 +27,7 @@ const initialState = {
   login: "",
   email: "",
   password: "",
+  avatar: "",
 };
 
 export function RegistationScreen({ navigation }) {
@@ -51,6 +57,26 @@ export function RegistationScreen({ navigation }) {
     setIsFocused(true);
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      const photo = await result.assets[0].uri;
+
+      setInfo((prevState) => ({
+        ...prevState,
+        avatar: photo,
+      }));
+    }
+  };
+
   const onShowPassword = () => setShowPassword(!showPassword);
 
   return (
@@ -69,7 +95,17 @@ export function RegistationScreen({ navigation }) {
                 paddingBottom: isShowKeyboard ? 32 : 78,
               }}
             >
-              <View style={styles.avatar} />
+              <View>
+                {info.avatar && (
+                  <Image
+                    style={{ width: 60, height: 60 }}
+                    source={{ uri: info.avatar }}
+                  />
+                )}
+                <TouchableOpacity onPress={pickImage}>
+                  <AntDesign name="close" size={24} color="black" />
+                </TouchableOpacity>
+              </View>
 
               <Text style={{ ...styles.title }}>Registration</Text>
 

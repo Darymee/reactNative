@@ -14,6 +14,7 @@ export const DefaultScreen = ({ navigation }) => {
 
   const { login } = useSelector((state) => state.auth);
   const { email } = useSelector((state) => state.auth);
+  const { avatar } = useSelector((state) => state.auth);
 
   const getAllPost = async () => {
     await db
@@ -47,10 +48,7 @@ export const DefaultScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.profile}>
         <View>
-          <Image
-            source={require("../../../assets/images/avatar.png")}
-            style={styles.avatar}
-          />
+          <Image source={{ uri: avatar }} style={styles.avatar} />
         </View>
         <View style={styles.info}>
           <Text style={styles.name}>{login}</Text>
