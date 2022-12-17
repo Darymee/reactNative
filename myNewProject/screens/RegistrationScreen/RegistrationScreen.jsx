@@ -46,9 +46,11 @@ export function RegistationScreen({ navigation }) {
 
   const onSubmit = () => {
     console.log(info);
+
     if (!info.login || !info.email || !info.password) return;
 
     dispatch(authSignUpUser(info));
+
     setInfo(initialState);
   };
 
@@ -57,7 +59,7 @@ export function RegistationScreen({ navigation }) {
     setIsFocused(true);
   };
 
-  const pickImage = async () => {
+  const addAvatar = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -68,13 +70,20 @@ export function RegistationScreen({ navigation }) {
     console.log(result);
 
     if (!result.canceled) {
-      const photo = await result.assets[0].uri;
+      const photo = result.assets[0].uri;
 
       setInfo((prevState) => ({
         ...prevState,
         avatar: photo,
       }));
     }
+  };
+
+  const deleteAvatar = () => {
+    setInfo((prevState) => ({
+      ...prevState,
+      avatar: "",
+    }));
   };
 
   const onShowPassword = () => setShowPassword(!showPassword);
@@ -95,16 +104,45 @@ export function RegistationScreen({ navigation }) {
                 paddingBottom: isShowKeyboard ? 32 : 78,
               }}
             >
-              <View>
-                {info.avatar && (
-                  <Image
-                    style={{ width: 60, height: 60 }}
-                    source={{ uri: info.avatar }}
-                  />
+              <View
+                style={{
+                  position: "absolute",
+                  top: -60,
+                  left: "39%",
+                }}
+              >
+                {info.avatar ? (
+                  <>
+                    <Image
+                      source={{ uri: info.avatar }}
+                      style={styles.avatar}
+                    />
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={deleteAvatar}
+                    >
+                      <AntDesign name="close" size={13} color="#E8E8E8" />
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      source={require("../../assets/images/layout.png")}
+                      style={styles.avatar}
+                    />
+                    <TouchableOpacity
+                      style={styles.addButton}
+                      onPress={addAvatar}
+                    >
+                      <AntDesign
+                        name="close"
+                        size={13}
+                        color="#FF6C00"
+                        style={{ transform: [{ rotate: "45deg" }] }}
+                      />
+                    </TouchableOpacity>
+                  </>
                 )}
-                <TouchableOpacity onPress={pickImage}>
-                  <AntDesign name="close" size={24} color="black" />
-                </TouchableOpacity>
               </View>
 
               <Text style={{ ...styles.title }}>Registration</Text>

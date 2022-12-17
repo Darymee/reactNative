@@ -24,7 +24,7 @@ export const CommentsScreen = ({ route }) => {
   const item = route.params.item;
   const currentPhoto = route.params.item.photo;
   const postId = route.params.item.id;
-  const { login } = useSelector((state) => state.auth);
+  const { login, avatar } = useSelector((state) => state.auth);
 
   const createPost = async () => {
     if (!comment) return;
@@ -36,7 +36,7 @@ export const CommentsScreen = ({ route }) => {
       .collection("posts")
       .doc(postId)
       .collection("comments")
-      .add({ comment, login, date });
+      .add({ comment, login, date, avatar });
 
     await db
       .firestore()
@@ -80,12 +80,16 @@ export const CommentsScreen = ({ route }) => {
                 style={{
                   width: 28,
                   height: 28,
-                  backgroundColor: "grey",
-                  borderRadius: "50%",
                   marginRight: 16,
                 }}
               >
-                <Image style={styles.avatar} />
+                {item.avatar ? (
+                  <Image style={styles.avatar} source={{ uri: item.avatar }} />
+                ) : (
+                  <Image
+                    style={{ ...styles.avatar, backgroundColor: "grey" }}
+                  />
+                )}
               </View>
               <View style={styles.comment}>
                 <Text style={styles.commentText}>{item.comment}</Text>

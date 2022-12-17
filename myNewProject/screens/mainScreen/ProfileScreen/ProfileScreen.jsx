@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 
+import * as ImagePicker from "expo-image-picker";
+
 import {
   Text,
   View,
@@ -12,17 +14,25 @@ import {
   SafeAreaView,
 } from "react-native";
 
-import { Feather } from "@expo/vector-icons";
+import { Feather, AntDesign } from "@expo/vector-icons";
 
 import { styles } from "./ProfileScreen.styled";
 
 import db from "../../../firebase/config";
 
-import { authSignOutUser } from "../../../redux/auth/authOperations";
+import {
+  authSignOutUser,
+  authStateChangedUser,
+} from "../../../redux/auth/authOperations";
+
+import { authSlice } from "../../../redux/auth/authReducer";
+
+const { updateUserProfile } = authSlice.actions;
 
 export const ProfileScreen = ({ navigation }) => {
   const [userPosts, setUserPosts] = useState([]);
-  const { userId, login } = useSelector((state) => state.auth);
+  const [userAvatar, setUserAvatar] = useState("");
+  const { userId, login, avatar } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -40,7 +50,56 @@ export const ProfileScreen = ({ navigation }) => {
 
   useEffect(() => {
     getUserPosts();
+    dispatch(authStateChangedUser());
   }, []);
+
+  const addAvatar = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setUserAvatar(result.assets[0].uri);
+
+      const user = await db.auth().currentUser;
+
+      const { displayName, photoURL } = await db.auth().currentUser;
+
+      const response = await fetch(userAvatar);
+      const file = await response.blob();
+
+      await db.storage().ref(`avatar/${userId}`).put(file);
+
+      const processedAvatar = await db
+        .storage()
+        .ref("avatar")
+        .child(userId)
+        .getDownloadURL();
+
+      await user.updateProfile({
+        displayName: login,
+        photoURL: processedAvatar,
+      });
+
+      const userUpdateProfile = {
+        login: displayName,
+        userId: userId,
+        avatar: photoURL,
+      };
+
+      dispatch(updateUserProfile(userUpdateProfile));
+    }
+  };
+
+  const deleteAvatar = () => {
+    setInfo((prevState) => ({
+      ...prevState,
+      avatar: "",
+    }));
+  };
 
   return (
     <View style={styles.container}>
@@ -58,12 +117,35 @@ export const ProfileScreen = ({ navigation }) => {
               <Feather name="log-out" size={24} color="#BDBDBD" />
             </TouchableOpacity>
           </View>
-          <View style={styles.avatar} />
+          <View
+            style={{
+              position: "absolute",
+              top: -60,
+              left: "39%",
+            }}
+          >
+            {avatar ? (
+              <Image source={{ uri: avatar }} style={styles.avatar} />
+            ) : (
+              <Image
+                source={require("../../../assets/images/layout.png")}
+                style={styles.avatar}
+              />
+            )}
+            <TouchableOpacity style={styles.addButton} onPress={addAvatar}>
+              <AntDesign
+                name="close"
+                size={13}
+                color="#FF6C00"
+                style={{ transform: [{ rotate: "45deg" }] }}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={{ marginBottom: 33 }}>
             <Text style={styles.userName}>{login}</Text>
           </View>
           {!userPosts.length ? (
-            <Text>No posts yet</Text>
+            <Text style={{ textAlign: "center" }}>No posts yet</Text>
           ) : (
             <FlatList
               data={userPosts}

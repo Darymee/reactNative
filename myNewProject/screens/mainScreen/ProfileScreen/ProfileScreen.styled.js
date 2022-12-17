@@ -24,11 +24,17 @@ export const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 16,
-    backgroundColor: "#F6F6F6",
+  },
+
+  addButton: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: "50%",
+    borderWidth: 1,
+    borderColor: "#FF6C00",
+    padding: 6,
     position: "absolute",
-    top: -60,
-    left: "40%",
-    marginBottom: 32,
+    top: "60%",
+    right: -15,
   },
 
   userName: {
@@ -37,13 +43,6 @@ export const styles = StyleSheet.create({
     fontSize: 30,
     lineHeight: 35,
     textAlign: "center",
-  },
-
-  addButton: {
-    backgroundColor: "transparent",
-    borderRadius: "50%",
-    padding: 6,
-    position: "relative",
   },
 
   photo: {

@@ -11,10 +11,7 @@ import { styles } from "./DefaultScreen.styled";
 
 export const DefaultScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
-
-  const { login } = useSelector((state) => state.auth);
-  const { email } = useSelector((state) => state.auth);
-  const { avatar } = useSelector((state) => state.auth);
+  const { login, email, avatar } = useSelector((state) => state.auth);
 
   const getAllPost = async () => {
     await db
@@ -31,6 +28,7 @@ export const DefaultScreen = ({ navigation }) => {
   };
 
   const onLike = async (item) => {
+    console.log(avatar);
     let likes = item.likes ? item.likes + 1 : 0 + 1;
 
     await db
@@ -48,7 +46,14 @@ export const DefaultScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.profile}>
         <View>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+          {avatar ? (
+            <Image source={{ uri: avatar }} style={styles.avatar} />
+          ) : (
+            <Image
+              source={require("../../../assets/images/layout.png")}
+              style={styles.avatar}
+            />
+          )}
         </View>
         <View style={styles.info}>
           <Text style={styles.name}>{login}</Text>

@@ -11,20 +11,32 @@ export const authSignUpUser =
 
       const user = await db.auth().currentUser;
 
+      const { uid, displayName, photoURL } = await db.auth().currentUser;
+
+      const response = await fetch(avatar);
+      const file = await response.blob();
+      await db.storage().ref(`avatar/${uid}`).put(file);
+
+      const processedAvatar = await db
+        .storage()
+        .ref("avatar")
+        .child(uid)
+        .getDownloadURL();
+
       await user.updateProfile({
         displayName: login,
+        photoURL: processedAvatar,
       });
-
-      const { uid, displayName } = await db.auth().currentUser;
 
       const userUpdateProfile = {
         userId: uid,
         login: displayName,
         email,
-        avatar,
+        avatar: photoURL,
       };
 
       dispatch(updateUserProfile(userUpdateProfile));
+
       console.log(user);
     } catch (error) {
       console.log(error.message);
@@ -53,7 +65,7 @@ export const authStateChangedUser = () => async (dispatch, getState) => {
         userId: user.uid,
         login: user.displayName,
         email: user.email,
-        avatar: user.avatar,
+        avatar: user.photoURL,
       };
 
       dispatch(updateUserProfile(userUpdateProfile));

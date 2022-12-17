@@ -23,19 +23,32 @@ export const styles = StyleSheet.create({
   avatar: {
     width: 120,
     height: 120,
+
     borderRadius: 16,
-    backgroundColor: "#F6F6F6",
-    position: "absolute",
-    top: -60,
-    left: "39%",
   },
 
   addButton: {
     backgroundColor: "transparent",
     borderRadius: "50%",
+    borderWidth: 1,
+    borderColor: "#FF6C00",
     padding: 6,
-    position: "relative",
+    position: "absolute",
+    top: "60%",
+    right: -15,
   },
+
+  deleteButton: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: "50%",
+    borderWidth: 1,
+    borderColor: "#E8E8E8",
+    padding: 6,
+    position: "absolute",
+    top: "60%",
+    right: -15,
+  },
+
   title: {
     fontFamily: "Roboto-Medium",
     textAlign: "center",
