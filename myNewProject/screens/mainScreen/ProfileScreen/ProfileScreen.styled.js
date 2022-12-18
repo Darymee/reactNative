@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
 
   addButton: {
     backgroundColor: "#FFFFFF",
-    borderRadius: "50%",
+    borderRadius: 100,
     borderWidth: 1,
     borderColor: "#FF6C00",
     padding: 6,

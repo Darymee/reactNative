@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from "react-native";
 
 import { styles } from "./LoginScreen.styled";
@@ -55,85 +56,92 @@ export function LoginScreen({ navigation }) {
           source={require("../../assets/images/bgImage.jpg")}
           style={styles.bgImage}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          <View
+            style={{
+              ...styles.wrapper,
+              ...Platform.select({
+                ios: { paddingBottom: isShowKeyboard ? 375 : 144 },
+                android: {
+                  paddingBottom: isShowKeyboard ? 32 : 144,
+                },
+              }),
+            }}
           >
-            <View
-              style={{
-                ...styles.wrapper,
-                paddingBottom: isShowKeyboard ? 32 : 144,
-              }}
+            <KeyboardAvoidingView
+              behavior={Platform.OS == "ios" ? "padding" : "height"}
             >
               <Text style={{ ...styles.title }}>Sing In</Text>
-              <View style={{ marginBottom: isShowKeyboard ? 0 : 43 }}>
-                <View style={styles.inputWrapp}>
-                  <TextInput
-                    placeholder="Email address"
-                    style={{
-                      ...styles.input,
-                      borderColor: isFocused ? "#FF6C00" : "#BDBDBD",
-                    }}
-                    value={info.email}
-                    onFocus={handleFocus}
-                    onChangeText={(value) =>
-                      setInfo((prevState) => ({ ...prevState, email: value }))
-                    }
-                  />
+              <View>
+                <View style={{ marginBottom: isShowKeyboard ? 0 : 43 }}>
+                  <View style={styles.inputWrapp}>
+                    <TextInput
+                      placeholder="Email address"
+                      style={{
+                        ...styles.input,
+                        borderColor: isFocused ? "#FF6C00" : "#BDBDBD",
+                      }}
+                      value={info.email}
+                      onFocus={handleFocus}
+                      onChangeText={(value) =>
+                        setInfo((prevState) => ({ ...prevState, email: value }))
+                      }
+                    />
+                  </View>
+                  <View>
+                    <TextInput
+                      placeholder="Password"
+                      secureTextEntry={showPassword}
+                      value={info.password}
+                      style={{
+                        ...styles.input,
+                        position: "relative",
+                        borderColor: isFocused ? "#FF6C00" : "#BDBDBD",
+                      }}
+                      onFocus={handleFocus}
+                      onChangeText={(value) =>
+                        setInfo((prevState) => ({
+                          ...prevState,
+                          password: value,
+                        }))
+                      }
+                    />
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={onShowPassword}
+                      style={styles.buttonShow}
+                    >
+                      <Text style={styles.buttonShowText}>
+                        {showPassword ? "Show" : "Hide"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={{ marginBottom: 0 }}>
-                  <TextInput
-                    placeholder="Password"
-                    secureTextEntry={showPassword}
-                    value={info.password}
-                    style={{
-                      ...styles.input,
-                      position: "relative",
-                      borderColor: isFocused ? "#FF6C00" : "#BDBDBD",
-                    }}
-                    onFocus={handleFocus}
-                    onChangeText={(value) =>
-                      setInfo((prevState) => ({
-                        ...prevState,
-                        password: value,
-                      }))
-                    }
-                  />
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={onShowPassword}
-                    style={styles.buttonShow}
-                  >
-                    <Text style={styles.buttonShowText}>
-                      {showPassword ? "Show" : "Hide"}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
 
-              {!isShowKeyboard && (
-                <View>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={styles.button}
-                    onPress={onSubmit}
-                  >
-                    <Text style={styles.buttonText}>Sing In</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {
-                      navigation.navigate("Register");
-                    }}
-                  >
-                    <Text style={styles.linkText}>
-                      Don't have an account yet?
-                      <Text>Sing Up</Text>
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          </KeyboardAvoidingView>
+                {!isShowKeyboard && (
+                  <View>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      style={styles.button}
+                      onPress={onSubmit}
+                    >
+                      <Text style={styles.buttonText}>Sing In</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => {
+                        navigation.navigate("Register");
+                      }}
+                    >
+                      <Text style={styles.linkText}>
+                        Don't have an account yet?
+                        <Text> Sing Up</Text>
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </KeyboardAvoidingView>
+          </View>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>

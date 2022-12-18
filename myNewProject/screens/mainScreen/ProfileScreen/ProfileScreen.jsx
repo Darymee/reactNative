@@ -11,7 +11,6 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  SafeAreaView,
 } from "react-native";
 
 import { Feather, AntDesign } from "@expo/vector-icons";

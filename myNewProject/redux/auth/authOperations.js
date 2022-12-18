@@ -1,4 +1,5 @@
 import db from "../../firebase/config";
+import { Alert } from "react-native";
 import { authSlice } from "./authReducer";
 
 const { updateUserProfile, authStateChange, authSignOut } = authSlice.actions;
@@ -10,36 +11,50 @@ export const authSignUpUser =
       await db.auth().createUserWithEmailAndPassword(email, password);
 
       const user = await db.auth().currentUser;
+      const { displayName, uid, photoURL } = await db.auth().currentUser;
 
-      const { uid, displayName, photoURL } = await db.auth().currentUser;
+      if (avatar) {
+        const response = await fetch(avatar);
+        const file = await response.blob();
+        await db.storage().ref(`avatar/${uid}`).put(file);
+        const processedAvatar = await db
+          .storage()
+          .ref("avatar")
+          .child(uid)
+          .getDownloadURL();
 
-      const response = await fetch(avatar);
-      const file = await response.blob();
-      await db.storage().ref(`avatar/${uid}`).put(file);
+        await user.updateProfile({
+          displayName: login,
+          photoURL: processedAvatar,
+          email,
+        });
 
-      const processedAvatar = await db
-        .storage()
-        .ref("avatar")
-        .child(uid)
-        .getDownloadURL();
+        dispatch(
+          updateUserProfile({
+            userId: uid,
+            login: displayName,
+            email,
+            avatar: photoURL,
+          })
+        );
+        return;
+      }
 
       await user.updateProfile({
         displayName: login,
-        photoURL: processedAvatar,
+        email,
       });
 
-      const userUpdateProfile = {
-        userId: uid,
-        login: displayName,
-        email,
-        avatar: photoURL,
-      };
-
-      dispatch(updateUserProfile(userUpdateProfile));
-
-      console.log(user);
+      dispatch(
+        updateUserProfile({
+          userId: uid,
+          login: displayName,
+          email,
+        })
+      );
     } catch (error) {
-      console.log(error.message);
+      Alert.alert("Error", error.message);
+      Alert.alert(error.code);
     }
   };
 export const authSignInUser =
@@ -47,10 +62,10 @@ export const authSignInUser =
   async (dispatch, getSatte) => {
     try {
       const user = await db.auth().signInWithEmailAndPassword(email, password);
-      console.log(user);
+      Alert.alert(`Welcome, ${email}!`);
     } catch (error) {
-      console.log(error.message);
-      console.log(error.code);
+      Alert.alert("Error", error.message);
+      Alert.alert(error.code);
     }
   };
 export const authSignOutUser = () => async (dispatch, getState) => {

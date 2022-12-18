@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import * as ImagePicker from "expo-image-picker";
-
 import { Camera, CameraType } from "expo-camera";
 import * as Location from "expo-location";
 
@@ -32,6 +31,29 @@ export const CreatePostsScreen = ({ navigation }) => {
   const [status, setStatus] = useState(false);
 
   const { userId, login } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Camera.requestCameraPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -64,18 +86,15 @@ export const CreatePostsScreen = ({ navigation }) => {
     const location = await Location.getCurrentPositionAsync();
     setPhoto(photo.uri);
     setLocation(location.coords);
+
     statusCheck();
   };
 
   const uploadPhotoToServer = async () => {
     const response = await fetch(photo);
-
     const file = await response.blob();
-
     const uniquePostId = Date.now().toString();
-
     await db.storage().ref(`postImage/${uniquePostId}`).put(file);
-
     const processedPhoto = await db
       .storage()
       .ref("postImage")
@@ -87,8 +106,6 @@ export const CreatePostsScreen = ({ navigation }) => {
 
   const uploadPostToServer = async () => {
     const photo = await uploadPhotoToServer();
-    console.log(location);
-
     const createPost = await db.firestore().collection("posts").add({
       photo,
       photoName,
@@ -98,9 +115,10 @@ export const CreatePostsScreen = ({ navigation }) => {
       login,
       likes: 0,
     });
+    return createPost;
   };
 
-  const sendPhoto = () => {
+  const createPost = () => {
     if (!status) return;
     uploadPostToServer();
     navigation.navigate("Default");
@@ -111,6 +129,7 @@ export const CreatePostsScreen = ({ navigation }) => {
     setPhotoName("");
     setPhotoPlace("");
     setPhoto(null);
+    setLocation("");
   };
 
   const pickImage = async () => {
@@ -121,33 +140,10 @@ export const CreatePostsScreen = ({ navigation }) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setPhoto(result.assets[0].uri);
     }
   };
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-      }
-      let locationRes = await Location.getCurrentPositionAsync();
-      setLocation(locationRes);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Camera.requestCameraPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-        return;
-      }
-    })();
-  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -217,7 +213,7 @@ export const CreatePostsScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={sendPhoto}
+            onPress={createPost}
             style={{
               ...styles.buttonSubmit,
               backgroundColor: status ? "#FF6C00" : "#F6F6F6",

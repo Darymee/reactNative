@@ -28,7 +28,6 @@ export const DefaultScreen = ({ navigation }) => {
   };
 
   const onLike = async (item) => {
-    console.log(avatar);
     let likes = item.likes ? item.likes + 1 : 0 + 1;
 
     await db

@@ -23,13 +23,12 @@ export const styles = StyleSheet.create({
   avatar: {
     width: 120,
     height: 120,
-
     borderRadius: 16,
   },
 
   addButton: {
     backgroundColor: "transparent",
-    borderRadius: "50%",
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: "#FF6C00",
     padding: 6,
@@ -40,7 +39,7 @@ export const styles = StyleSheet.create({
 
   deleteButton: {
     backgroundColor: "#FFFFFF",
-    borderRadius: "50%",
+    borderRadius: 50,
     borderWidth: 1,
     borderColor: "#E8E8E8",
     padding: 6,
@@ -57,9 +56,9 @@ export const styles = StyleSheet.create({
     lineHeight: 35,
     color: "#212121",
     marginBottom: 33,
-
     letterSpacing: 0.01,
   },
+
   inputWrapp: {
     marginBottom: 16,
   },
@@ -79,7 +78,7 @@ export const styles = StyleSheet.create({
   buttonShow: {
     position: "absolute",
     right: 16,
-    top: 16,
+    top: 20,
   },
   buttonShowText: {
     fontFamily: "Roboto-Regular",

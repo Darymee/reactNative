@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
   buttonShow: {
     position: "absolute",
     right: 16,
-    top: 16,
+    top: 20,
   },
   buttonShowText: {
     fontFamily: "Roboto-Regular",

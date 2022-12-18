@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 
 import {
   View,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
   Image,
   Text,
   TextInput,
@@ -20,6 +23,7 @@ import { styles } from "./CommentsScreen.styled";
 export const CommentsScreen = ({ route }) => {
   const [comment, setComment] = useState("");
   const [allComments, setAllComments] = useState([]);
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const item = route.params.item;
   const currentPhoto = route.params.item.photo;
@@ -47,6 +51,11 @@ export const CommentsScreen = ({ route }) => {
     setComment("");
   };
 
+  const keyboardHide = () => {
+    Keyboard.dismiss();
+    setIsShowKeyboard(false);
+  };
+
   const getAllPosts = async () => {
     await db
       .firestore()
@@ -58,68 +67,87 @@ export const CommentsScreen = ({ route }) => {
       );
   };
 
+  const handleFocus = () => {
+    setIsShowKeyboard(true);
+    setIsFocused(true);
+  };
+
   useEffect(() => {
     getAllPosts();
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: currentPhoto }} style={styles.photo} />
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          data={allComments}
-          renderItem={({ item }) => (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "baseline",
-                justifyContent: "space-between",
-              }}
-            >
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <View style={styles.container}>
+        <Image source={{ uri: currentPhoto }} style={styles.photo} />
+
+        <SafeAreaView style={styles.listWrapp}>
+          <FlatList
+            data={allComments}
+            renderItem={({ item }) => (
               <View
                 style={{
-                  width: 28,
-                  height: 28,
-                  marginRight: 16,
+                  flexDirection: "row",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
                 }}
               >
-                {item.avatar ? (
-                  <Image style={styles.avatar} source={{ uri: item.avatar }} />
-                ) : (
-                  <Image
-                    style={{ ...styles.avatar, backgroundColor: "grey" }}
-                  />
-                )}
-              </View>
-              <View style={styles.comment}>
-                <Text style={styles.commentText}>{item.comment}</Text>
-                <View style={{ marginRight: 0 }}>
-                  <Text style={styles.commentDate}>{item.date}</Text>
+                <View
+                  style={{
+                    width: 28,
+                    height: 28,
+                    marginRight: 16,
+                  }}
+                >
+                  {item.avatar ? (
+                    <Image
+                      style={styles.avatar}
+                      source={{ uri: item.avatar }}
+                    />
+                  ) : (
+                    <Image
+                      style={{ ...styles.avatar, backgroundColor: "grey" }}
+                    />
+                  )}
+                </View>
+                <View style={styles.comment}>
+                  <View style={{ marginBottom: 8 }}>
+                    <Text style={styles.userName}>{item.login}</Text>
+                  </View>
+                  <Text style={styles.commentText}>{item.comment}</Text>
+                  <View style={{ marginRight: 0 }}>
+                    <Text style={styles.commentDate}>{item.date}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-        />
-      </SafeAreaView>
-      <View>
-        <View style={{ borderRadius: "50%", position: "relative" }}>
-          <TextInput
-            value={comment}
-            placeholder="Comment"
-            placeholderTextColor="#BDBDBD"
-            style={styles.commentInput}
-            onChangeText={setComment}
+            )}
+            keyExtractor={(item) => item.id}
           />
-          <TouchableOpacity
-            style={styles.btnSend}
-            activeOpacity={0.7}
-            onPress={createPost}
-          >
-            <Feather name="arrow-up" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
+        </SafeAreaView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+        >
+          <View style={{ paddingBottom: isShowKeyboard ? 100 : 0 }}>
+            <View style={{ borderRadius: 50, position: "relative" }}>
+              <TextInput
+                value={comment}
+                placeholder="Comment"
+                placeholderTextColor="#BDBDBD"
+                style={styles.commentInput}
+                onChangeText={setComment}
+                onFocus={() => setIsShowKeyboard(true)}
+              />
+              <TouchableOpacity
+                style={styles.btnSend}
+                activeOpacity={0.7}
+                onPress={createPost}
+              >
+                <Feather name="arrow-up" size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };

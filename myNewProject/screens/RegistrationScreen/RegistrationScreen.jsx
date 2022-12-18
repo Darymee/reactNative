@@ -45,8 +45,6 @@ export function RegistationScreen({ navigation }) {
   };
 
   const onSubmit = () => {
-    console.log(info);
-
     if (!info.login || !info.email || !info.password) return;
 
     dispatch(authSignUpUser(info));
@@ -95,20 +93,25 @@ export function RegistationScreen({ navigation }) {
           source={require("../../assets/images/bgImage.jpg")}
           style={styles.bgImage}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          <View
+            style={{
+              ...styles.wrapper,
+              ...Platform.select({
+                ios: { paddingBottom: isShowKeyboard ? 375 : 78 },
+                android: {
+                  paddingBottom: isShowKeyboard ? 32 : 78,
+                },
+              }),
+            }}
           >
-            <View
-              style={{
-                ...styles.wrapper,
-                paddingBottom: isShowKeyboard ? 32 : 78,
-              }}
+            <KeyboardAvoidingView
+              behavior={Platform.OS == "ios" ? "padding" : "height"}
             >
               <View
                 style={{
                   position: "absolute",
-                  top: -60,
-                  left: "39%",
+                  top: -150,
+                  left: "35%",
                 }}
               >
                 {info.avatar ? (
@@ -227,8 +230,8 @@ export function RegistationScreen({ navigation }) {
                   </TouchableOpacity>
                 </>
               )}
-            </View>
-          </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+          </View>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
