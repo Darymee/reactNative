@@ -215,16 +215,14 @@ export function RegistationScreen({ navigation }) {
                   >
                     <Text style={styles.buttonText}>Sing Up</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={0.7}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      navigation.navigate("Login");
+                    }}
+                  >
                     <Text style={styles.linkText}>
-                      Do you already have an account?{" "}
-                      <Text
-                        onPress={() => {
-                          navigation.navigate("Login");
-                        }}
-                      >
-                        Sing In
-                      </Text>
+                      Do you already have an account? <Text>Sing In</Text>
                     </Text>
                   </TouchableOpacity>
                 </>

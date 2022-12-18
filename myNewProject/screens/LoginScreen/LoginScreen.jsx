@@ -119,16 +119,15 @@ export function LoginScreen({ navigation }) {
                   >
                     <Text style={styles.buttonText}>Sing In</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={0.7}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      navigation.navigate("Register");
+                    }}
+                  >
                     <Text style={styles.linkText}>
-                      Don't have an account yet?{" "}
-                      <Text
-                        onPress={() => {
-                          navigation.navigate("Register");
-                        }}
-                      >
-                        Sing Up
-                      </Text>
+                      Don't have an account yet?
+                      <Text>Sing Up</Text>
                     </Text>
                   </TouchableOpacity>
                 </View>
